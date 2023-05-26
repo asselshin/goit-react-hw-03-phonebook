@@ -19,33 +19,37 @@ class App extends Component {
     const savedContacts = localStorage.getItem('contacts');
     if (savedContacts !== null) {
       this.setState({ contacts: JSON.parse(savedContacts) });
-      }
-  }
-  
+    }
+  };
 
   componentDidUpdate = (prevProps, prevState) => {
     if (prevState.contacts !== this.state.contacts) {
       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    } else {
-      this.setState({ contacts: [] });
     }
-  }
-  
+  };
 
   changeFilter = e => {
     this.setState({ filter: e.currentTarget.value });
   };
 
   formSubmitHandler = data => {
-    
     const contact = {
       id: nanoid(),
       ...data,
     };
-    
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, contact],
-    }))      
+
+    const repeatedName = contact.name.toLowerCase();
+
+    const hasrepeatedName = this.state.contacts.find(
+      contact => contact.name.toLowerCase() === repeatedName.toLowerCase()
+    );
+    if (!hasrepeatedName) {
+      this.setState(prevState => ({
+        contacts: [...prevState.contacts, contact],
+      }));
+    } else {
+      alert(`${contact.name} is already in contacts`);
+    }
   };
 
   getFillteredNames = () => {
@@ -60,8 +64,10 @@ class App extends Component {
 
   deleteContact = contactId => {
     this.setState(prevState => ({
-      contacts: [...prevState.contacts.filter(contact => contact.id !== contactId),], 
-      }));
+      contacts: [
+        ...prevState.contacts.filter(contact => contact.id !== contactId),
+      ],
+    }));
   };
 
   render() {
@@ -70,9 +76,12 @@ class App extends Component {
     return (
       <div className="container">
         <h1>Phonebook </h1>
-        <Form onSubmit={this.formSubmitHandler} contacts={this.state.contacts} />
+        <Form
+          onSubmit={this.formSubmitHandler}
+          contacts={this.state.contacts}
+        />
         <h2>Contacts</h2>
-        <Filter value={this.state.filter} onChange={this.changeFilter}/>
+        <Filter value={this.state.filter} onChange={this.changeFilter} />
         <ContactList
           contactArray={filteredNames}
           onDeleteClick={this.deleteContact}
