@@ -15,8 +15,10 @@ class Form extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
+    const isAdded = this.props.onSubmit(this.state);
+    if (isAdded) {
+      this.reset();
+    }
   };
 
   reset = () => {

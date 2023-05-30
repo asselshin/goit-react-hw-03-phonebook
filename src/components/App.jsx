@@ -43,13 +43,16 @@ class App extends Component {
     const hasrepeatedName = this.state.contacts.find(
       contact => contact.name.toLowerCase() === repeatedName.toLowerCase()
     );
-    if (!hasrepeatedName) {
-      this.setState(prevState => ({
-        contacts: [...prevState.contacts, contact],
-      }));
-    } else {
+
+    if (hasrepeatedName) {
       alert(`${contact.name} is already in contacts`);
+      return false;
     }
+
+    this.setState(prevState => ({
+        contacts: [...prevState.contacts, contact],
+    }));    
+    return true;    
   };
 
   getFillteredNames = () => {
